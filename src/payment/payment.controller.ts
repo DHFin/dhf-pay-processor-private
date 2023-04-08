@@ -1,12 +1,10 @@
-import {Controller} from "@nestjs/common";
-import { PaymentService } from "./payment.service";
-import {EventPattern} from "@nestjs/microservices";
+import { Controller } from '@nestjs/common';
+import { PaymentService } from './payment.service';
+import { EventPattern } from '@nestjs/microservices';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(
-    public readonly paymentService: PaymentService
-  ) {}
+  constructor(public readonly paymentService: PaymentService) {}
 
   /**
    * @description controller receives data from dhf-pay-back and creates a payment based on it. Returns the id of the created payment
@@ -15,10 +13,7 @@ export class PaymentController {
    */
   @EventPattern('createOne')
   async createOne(data: any) {
-
-    const payment = await this.paymentService.create(data)
-    return payment.id
+    const payment = await this.paymentService.create(data);
+    return payment.id;
   }
-
 }
-
