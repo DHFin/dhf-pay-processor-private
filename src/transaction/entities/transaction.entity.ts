@@ -35,6 +35,9 @@ export class Transaction extends BaseEntity {
   @Column({ type: 'bigint' })
   amount: string;
 
-  @Column({ nullable: true })
-  walletForTransaction: string;
+  @Column({ nullable: true, type: 'simple-json' })
+  walletForTransaction: {
+    publicKey: string;
+    privateKey: string;
+  };
 }
