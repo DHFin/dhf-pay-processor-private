@@ -3,9 +3,9 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CurrencyType } from '../currency/currency.enum';
 import { Transaction } from './entities/transaction.entity';
-import { CurrencyFabric } from "../currency/currencyFabric";
+import { CurrencyFabric } from '../currency/currencyFabric';
+import { RpcClientBtcService } from '../rpcClientBtc/rpcClientBtc';
 
 @Injectable()
 export class TransactionService {
@@ -14,10 +14,15 @@ export class TransactionService {
     private readonly repo: Repository<Transaction>,
     private httpService: HttpService,
     private mailerService: MailerService,
+    private RpcService: RpcClientBtcService,
   ) {}
 
   async find(props) {
     return await this.repo.find(props);
+  }
+
+  async getBitcoinRpc() {
+    return await this.RpcService.getRpc();
   }
 
   /**
@@ -56,15 +61,22 @@ export class TransactionService {
    */
   async updateTransactions() {
     const transactions = await this.repo.find({
-      where: {
-        status: 'processing',
-      },
+      where: [
+        { status: 'processing' },
+        { status: 'confirmed' },
+      ],
       relations: ['payment', 'payment.store', 'payment.store.wallets'],
+    });
+    const rpc = await this.getBitcoinRpc();
+    rpc.command('getblockchaininfo').then((err, res) => {
+      console.log('res', res);
+      console.log('err', err);
     });
     const updateProcessingTransactions = await Promise.all(
       transactions.map(async (transaction) => {
         const updatedTransaction = new CurrencyFabric(this.mailerService).create(
           transaction.payment.currency,
+          rpc
         );
         if (updatedTransaction) {
           const updatedDataTransaction =
@@ -73,9 +85,11 @@ export class TransactionService {
             return updatedDataTransaction;
           }
         }
-        return transaction;
+        return transaction
       }),
     );
+
+    console.log('updateProcessingTransactions', updateProcessingTransactions);
 
     await this.repo.save(updateProcessingTransactions);
   }

@@ -1,21 +1,22 @@
 import { Casper } from './currencies/casper';
-import { Doge } from './currencies/doge';
 import { CurrencyType } from './currency.enum';
 import { MailerService } from '@nest-modules/mailer';
 import { Bitcoin } from './currencies/bitcoin';
 import { Injectable } from '@nestjs/common';
+import { Ethereum } from './currencies/ethereum';
 
 @Injectable()
 class CurrencyFabric {
-  constructor(private readonly mailerService: MailerService) {}
-  create(type: CurrencyType) {
-    console.log('__dirname', __dirname + '../mail-templates');
+  constructor(
+    private readonly mailerService: MailerService,
+  ) {}
+  create(type: CurrencyType, rpcClient?: any) {
     switch (type) {
       case CurrencyType.Bitcoin: {
-        return new Bitcoin(this.mailerService);
+        return new Bitcoin(this.mailerService, rpcClient);
       }
       case CurrencyType.Ethereum: {
-        return new Casper(this.mailerService);
+        return new Ethereum(this.mailerService);
       }
       // case CurrencyType.Doge: {
       //   return new Doge();

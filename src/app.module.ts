@@ -9,8 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { PaymentModule } from './payment/payment.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
-import {StoresModule} from "./stores/stores.module";
-import { CurrencyFabric } from "./currency/currencyFabric";
+import { StoresModule } from './stores/stores.module';
+import { CurrencyFabric } from './currency/currencyFabric';
 const isProduction = process.env.npm_lifecycle_event === 'start:prod';
 const dotEnvPath = isProduction
   ? path.resolve(__dirname, '..', '.env.staging')

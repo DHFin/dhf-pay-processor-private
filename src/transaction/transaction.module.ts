@@ -6,6 +6,7 @@ import { WalletOrmEntity } from '../wallet/wallet.entity';
 import { Transaction } from './entities/transaction.entity';
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
+import { RpcClientBtcService } from "../rpcClientBtc/rpcClientBtc";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { TransactionService } from './transaction.service';
     ScheduleModule.forRoot(),
   ],
   controllers: [TransactionController],
-  providers: [TransactionService],
+  providers: [TransactionService, RpcClientBtcService],
   exports: [TransactionService],
 })
 export class TransactionModule {}
