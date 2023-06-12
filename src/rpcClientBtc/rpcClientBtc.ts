@@ -6,7 +6,7 @@ const config = {
   protocol: 'http',
   username: 'btcuser',
   password: 'btcpwd',
-  host: '127.0.0.1',
+  host: '192.168.88.3',
   port: '8332',
   wallet: 'main1',
 };
